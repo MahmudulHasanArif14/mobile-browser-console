@@ -20,7 +20,7 @@ The console should open up quickly, and you are ready to work!
 Download the MobileBrowserConsole.js file (or minified MobileBrowserConsole.min.js file) and store and reference locally.
 
 By default the console will open when the page loads. Writing <code>window.delayConsole = true;</code> in a script before calling in this file will prevent it from opening on page load.
-You can then open it dynamically with <code>createConsole();</code>
+You can then open it dynamically with <code>MobileWebConsole.createConsole();</code>
 
 ```
 <script>
@@ -30,7 +30,7 @@ You can then open it dynamically with <code>createConsole();</code>
 <script>
 
   // when it is convenient to open the console...
-  createConsole();
+  MobileWebConsole.createConsole();
 </script>
 ```
 
