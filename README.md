@@ -35,17 +35,17 @@ You can then open it dynamically with <code>MobileWebConsole.createConsole();</c
 ```
 
 ### Methods
-The module overrides the window.console object (if it exists), adding functionality and new methods. The module name is Mobile Browser Console, with MBC as an alias. Standard methods are shown below (with the MBC alias).
+The module overrides the window.console object (if it exists), adding functionality and new methods. The module name is Mobile Browser Console, with mbc as an alias. Standard methods are shown below (with the mbc alias).
 
-MBC.createConsole() // Initializes module and creates new DOM elements defining console. This is all you need to enter to get the new console up and running.
+mbc.createConsole() // Initializes module and creates new DOM elements defining console. This is all you need to enter to get the new console up and running.
 
-MBC.create() // An alias for MBC.CreateConsole
+mbc.create() // An alias for mbc.CreateConsole
 
-MBC.hide() // Hides the console.
+mbc.hide() // Hides the console.
 
-MBC.show() // Shows the console, if hidden.
+mbc.show() // Shows the console, if hidden.
 
-MBC.destroy() // Reinstates initial console processes for the window.console object and removes new console DOM elements from page.
+mbc.destroy() // Reinstates initial console processes for the window.console object and removes new console DOM elements from page.
 
 ## License
 These files are available for use under the MIT license.
