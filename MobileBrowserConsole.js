@@ -45,12 +45,6 @@
 			return this.substr(position, searchString.length) === searchString;
 	  };
 	}
-	
-	function setStyle(elm, cssObj) {
-		for(var pro in cssObj) {
-			elm.style[pro] = cssObj[pro];
-		}
-	}
 
 	var lineCounter = 1,
 		consoleLines = [],
@@ -184,28 +178,84 @@
 		window.clear = window.clear || console.clear;
 		window.log = window.log || console.log;
 
-		var sheet;
-		if(document.styleSheets.length === 0) {
-			sheet = document.createElement("STYLE");
-			document.body.appendChild(sheet);
+		try { // Stylesheet restrictions may throw a HierarchyRequestError. IE8 may throw a ReferenceError for sheet.insertRule.
+			var sheet,
+				rulesLen = 0;
+
+			if(document.styleSheets.length === 0) {
+				sheet = document.createElement("STYLE");
+				document.head.appendChild(sheet);
+			} else {
+				sheet = document.styleSheets[0];
+				rulesLen = sheet.cssRules.length;
+			}
+
+			insertStyleRule(sheet, "#spaceBuffer", "width: 100%;", rulesLen);
+			insertStyleRule(sheet, "#consoleDiv", "width: 100%; z-index: 100; position: fixed ; left: 0px; bottom: 0;", rulesLen + 1);
+			insertStyleRule(sheet, "#consoleLog", "height: 100px; width: 100%; text-align: left; overflow-y: scroll; color: black; border-top: 2px solid gray; font: 13px Arial; padding-left: 3px; background-color: rgba(208, 208, 208, 0.95); word-wrap: wrap;", rulesLen + 2);
+			insertStyleRule(sheet, "#consoleLog .consoleError", "color: red;", rulesLen + 3);
+			insertStyleRule(sheet, "#consoleLog .consoleResponse", "color: gray;", rulesLen + 4);
+			insertStyleRule(sheet, "#consoleEntry", "border: 1px solid #58ACF8; border-width: 1px 0; background-color: rgb(192, 192, 192); background-color: rgba(192, 192, 192, 0.95); color: black; height: 15px; width: 100%; font: 13px Arial; padding-left: 3px;", rulesLen + 5);
+			insertStyleRule(sheet, "#consoleLog", "transition: height .5s;", rulesLen + 6);
+			insertStyleRule(sheet, "#consoleLog .consoleGray", "color: gray;", rulesLen + 7);
+			insertStyleRule(sheet, "#consoleLog table.consoleTable", "border-collapse: collapse; width: 100%;", rulesLen + 8);
+			insertStyleRule(sheet, "#consoleLog th", "border: 1px solid #444; padding: 2px 3px; color: black; font-weight: normal;", rulesLen + 9);
+			insertStyleRule(sheet, "#consoleLog td", "border: 1px solid #444; padding: 2px 3px; color: #0000e3;", rulesLen + 10);
+			insertStyleRule(sheet, "#consoleLog .consoleWarn", "color: #FFCC66;", rulesLen + 11);
+			insertStyleRule(sheet, "#consoleLog ul", "list-style-type: none;", rulesLen + 12);
+		} catch(e) {
+			applyStyles();
+		}
+	} // End createConsole()
+
+	/**
+	 * @description Insert style rules (cross-browser).
+	 * @param {Object} sheet - A CSSStyleSheet object.
+	 *  {string} selector - The CSS selector defining the new rule.
+	 *  {string} rule - The CSS rule with the properties to be inserted.
+	 * {number} index - The line within the CSSStyleSheet where the rule will be inserted.
+	 */
+	function insertStyleRule(sheet, selector, rule, index) {
+		if(sheet.insertRule) {
+			sheet.insertRule(selector + " {" + rule + "}", index);
 		} else {
-			sheet = document.styleSheets[0];
+			sheet.addRule(selector, rule, index);
+		}
+	} // End addRule()
+
+	// @description Sets a series of style properties on a set of DOM elements.
+	// @param {Object} elms - A NodeList returned from a document.querySelectorAll() call.
+	// {Object} cssObj - A primitive object with key-value pairs set as CSS properties and the corresponding values to set them as.
+	function setStyle(elms, cssObj) {
+		for(var i = 0; i < elms.length; i++) {
+			for(var pro in cssObj) {
+				elms[i].style[pro] = cssObj[pro];
+			}
+		}
+	} // End setStyle()
+
+	/**
+	 * @description A backup function for if there are errors thrown from trying to insert CSS stylesheet rules dynamically.
+	 */
+	function applyStyles() {
+		if(document.getElementById("spaceBuffer") === null || document.getElementById("consoleDiv") === null) {
+			return setTimeout(applyStyles, 40); // We wait patiently until the console has been added to the DOM.
 		}
 		
-		sheet.insertRule("#spaceBuffer {width: 100%;}", 0);
-		sheet.insertRule("#consoleDiv {width: 100%; z-index: 100; position: fixed ; left: 0px; bottom: 0;}", 1);
-		sheet.insertRule("#consoleLog {height: 100px; width: 100%; text-align: left; overflow-y: scroll; word-wrap: wrap; color: black; background-color: rgba(208, 208, 208, 0.95); border-top: 2px solid gray; font: 13px Arial; padding-left: 3px;}", 2);
-		sheet.insertRule("#consoleLog .consoleError {color: red;}", 3);
-		sheet.insertRule("#consoleLog .consoleResponse {color: gray;}", 4);
-		sheet.insertRule("#consoleEntry {border: 1px solid #58ACF8; border-width: 1px 0; background-color: rgb(192, 192, 192); background-color: rgba(192, 192, 192, 0.95); color: black; height: 15px; width: 100%; font: 13px Arial; padding-left: 3px;}", 5);
-		sheet.insertRule("#consoleLog {transition: height .5s;}", 6);
-		sheet.insertRule("#consoleLog .consoleGray {color: gray;}", 7);
-		sheet.insertRule("#consoleLog table.consoleTable {border-collapse: collapse; width: 100%;}", 8);
-		sheet.insertRule("#consoleLog th {border: 1px solid #444; padding: 2px 3px; color: black; font-weight: normal;}", 9);
-		sheet.insertRule("#consoleLog td {border: 1px solid #444; padding: 2px 3px; color: #0000e3;}", 10);
-		sheet.insertRule("#consoleLog .consoleWarn {color: #FFCC66;}", 11);
-		sheet.insertRule("#consoleLog ul {list-style-type: none;}", 12);
-	} // End createConsole()
+		setStyle("#spaceBuffer", {width: "100%"});
+		setStyle("#consoleDiv", {width: "100%", zIndex: "100", position: "fixed", left: "0px", bottom: "0"});
+	   	setStyle("#consoleLog", {height: "100px", width: "100%", "textAlign": "left", overflowY: "scroll", wordWrap: "wrap", color: "black", backgroundColor: "rgba(208, 208, 208, 0.95)", borderTop: "2p1x solid gray", font: "13px Arial", paddingLeft: "3px"});
+		setStyle("#consoleLog .consoleError", {color: "red"});
+		setStyle("#consoleLog .consoleResponse", {color: "gray"});
+		setStyle("#consoleEntry", {border: "1px solid #58ACF8", borderWidth: "1px 0", backgroundColor: "rgb(192, 192, 192)", backgroundColor: "rgba(192, 192, 192, 0.95)", color: "black", height: "15px", width: "100%", font: "13px Arial", paddingLeft: "3px"});
+		setStyle("#consoleLog", {transition: "height .5s"});
+		setStyle("#consoleLog .consoleGray", {color: "gray"});
+		setStyle("#consoleLog table.consoleTable", {borderCollapse: "collapse", width: "100%"});
+		setStyle("#consoleLog th", {border: "1px solid #444", padding: "2px 3px", color: "black", fontWeight: "normal"});
+		setStyle("#consoleLog td", {border: "1px solid #444", padding: "2px 3px", color: "#0000e3"});
+		setStyle("#consoleLog .consoleWarn", {color: "#FFCC66"});
+		setStyle("#consoleLog ul", {listStyleType: "none"});
+	} // End applyStyles()
 
 	/**
 	 * @description Capture user input and add to the running log.
@@ -339,7 +389,7 @@
 	};
 }());
 
-window.MBC = window.MBC || MobileBrowserConsole; // alias
+window.mbc = window.mbc || MobileBrowserConsole; // alias
 
 // Since the most likely use case is to dynamically create this script to test mobile pages, it will be easier to assume it should be started.
 if(typeof window.delayConsole === "undefined") {
