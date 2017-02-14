@@ -187,7 +187,7 @@
 				document.head.appendChild(sheet);
 			} else {
 				sheet = document.styleSheets[0];
-				rulesLen = sheet.cssRules.length;
+				rulesLen = (sheet.cssRules || []).length;
 			}
 
 			insertStyleRule(sheet, "#spaceBuffer", "width: 100%;", rulesLen);
@@ -211,9 +211,9 @@
 	/**
 	 * @description Insert style rules (cross-browser).
 	 * @param {Object} sheet - A CSSStyleSheet object.
-	 *  {string} selector - The CSS selector defining the new rule.
-	 *  {string} rule - The CSS rule with the properties to be inserted.
-	 * {number} index - The line within the CSSStyleSheet where the rule will be inserted.
+	 * @param {string} selector - The CSS selector defining the new rule.
+	 * @param {string} rule - The CSS rule with the properties to be inserted.
+	 * @param {number} index - The line within the CSSStyleSheet where the rule will be inserted.
 	 */
 	function insertStyleRule(sheet, selector, rule, index) {
 		if(sheet.insertRule) {
@@ -221,12 +221,18 @@
 		} else {
 			sheet.addRule(selector, rule, index);
 		}
-	} // End addRule()
+	} // End addRule() 
 
-	// @description Sets a series of style properties on a set of DOM elements.
-	// @param {Object} elms - A NodeList returned from a document.querySelectorAll() call.
-	// {Object} cssObj - A primitive object with key-value pairs set as CSS properties and the corresponding values to set them as.
+	/**
+	 * @description Sets a series of style properties on a set of DOM elements.
+	 * @param {Object} elms - A NodeList returned from a document.querySelectorAll() call.
+	 * @param {Object} cssObj - A primitive object with key-value pairs set as CSS properties and the corresponding values to set them as.
+	 */
 	function setStyle(elms, cssObj) {
+		if(typeof elms === "string") {
+			elms = document.querySelectorAll(elms);
+		}
+
 		for(var i = 0; i < elms.length; i++) {
 			for(var pro in cssObj) {
 				elms[i].style[pro] = cssObj[pro];
