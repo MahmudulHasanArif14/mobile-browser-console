@@ -4,7 +4,7 @@ A JavaScript module for working with a JavaScript console on mobile webpages.
 ## Usage
 
 ### To use in a mobile browser
-You will have to import the file for any webpage you visit, each time you visit and want to use this tool. (Note: this is not guaranteed to work on all sites, devices, or browsers.)
+You will have to import the file for any webpage you visit, each time you visit and want to use this tool. (Note: this process may be blocked on certain websites, devices, or browsers.)
 
 To run the file, follow these quick 5 steps:
 
@@ -17,7 +17,7 @@ To run the file, follow these quick 5 steps:
 The console should open up quickly, and you are ready to work!
 
 ### To use for your own development
-Download the MobileBrowserConsole.js file (or minified MobileBrowserConsole.min.js file) and store and reference locally.
+Download the mobile-browser-console.js file (or minified mobile-browser-console.min.js file) and store and reference locally.
 
 By default the console will open when the page loads. Writing <code>window.delayConsole = true;</code> in a script before calling in this file will prevent it from opening on page load.
 You can then open it dynamically with <code>MobileWebConsole.createConsole();</code>
