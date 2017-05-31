@@ -26,11 +26,11 @@ You can then open it dynamically with <code>MobileBrowserConsole.createConsole()
 <script>
   window.delayConsole = true;
 </script>
-<script src="../pathto/MobileBrowserConsole.js"></script>
+<script src="../pathto/mobile-browser-console.js"></script>
 <script>
 
   // when it is convenient to open the console...
-  MobileWebConsole.createConsole();
+  MobileBrowserConsole.createConsole();
 </script>
 ```
 
