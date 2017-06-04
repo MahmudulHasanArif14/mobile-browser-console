@@ -94,11 +94,11 @@
 			bindElementEvent(consoleLog, "click", copyOldEntry, false);
 		}
 
-		// Redefined standard console operations to add new "print to screen" functionality but maintain the original functionality for desktop
+		// Redefines standard console operations to add new "print to screen" functionality but maintain the original functionality for desktop
 		console.log = function(msg) {
 			if(arguments.length > 1) { // Allow multiple arguments, console.log("a", "b", "c");
 				for(var i = 0; i < arguments.length; i++) {
-					console.log.call(this, arguments);
+					console.log.call(this, arguments[i]);
 				}
 				
 				return;
